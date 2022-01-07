@@ -65,7 +65,7 @@ services:
   # https://github.com/balenablocks/hostname
   hostname:
     image: balenablocks/hostname:latest
-    restart: unless-stoped
+    restart: false
 #   privileged: true
     network_mode: host
     labels:

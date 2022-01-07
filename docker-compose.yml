@@ -1,8 +1,37 @@
 version: '2'
 volumes:
   powerdns-data: {}
+  powerdns-admin-data: {}
   pihole-data: {}
 services:
+  powerdns-admin:
+    image: ngoduykhanh/powerdns-admin:latest
+    restart: always
+    privileged: true
+    networks:
+      - web
+    ports:
+      - 9191:80
+    volumes:
+      - powerdns-admin-data:/data
+    environment:
+      - SECRET_KEY="secretkey"
+#      - SQLALCHEMY_TRACK_MODIFICATIONS=
+#    'SQLALCHEMY_DATABASE_URI=
+#    'MAIL_SERVER=
+#    'MAIL_PORT=
+#    'MAIL_DEBUG=
+#    'MAIL_USE_TLS',
+#    'MAIL_USE_SSL',
+#    'MAIL_USERNAME',
+#    'MAIL_PASSWORD',
+#
+#    'MAIL_DEFAULT_SENDER',
+    depends_on:
+      - powerdns
+    container_name: powerdns-admin
+
+
   powerdns:
     build:
       context: .

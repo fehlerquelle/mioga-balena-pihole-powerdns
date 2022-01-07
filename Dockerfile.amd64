@@ -36,17 +36,19 @@ VOLUME $DATA_DIR
 # Copy required files and fix permissions
 #########################################
 
-COPY src/* /root/
+COPY src/* /root/ 
 
 # For cross compile on dockerhub
 ################################
 
-COPY amd64/qemu-x86_64-static /usr/bin/
-COPY amd64/resin-xbuild /usr/bin/
+COPY amd64/qemu-x86_64-static /usr/bin/qemu-x86_64-static
+COPY amd64/resin-xbuild /usr/bin/resin-xbuild
 
-RUN [ "/usr/bin/qemu-x86_64-static", "/bin/sh", "-c", "ln -s resin-xbuild /usr/bin/cross-build-start; ln -s resin-xbuild /usr/bin/cross-build-end; ln /bin/sh /bin/sh.real" ]
+RUN chmod u+x /usr/bin/qemu-x86_64-static 
+RUN ["/usr/bin/qemu-x86_64-static", "/bin/sh", "-c", "ln -s resin-xbuild /usr/bin/cross-build-start; ln -s resin-xbuild /usr/bin/cross-build-end; ln /bin/sh /bin/sh.real" ]
 
-RUN [ "cross-build-start" ]
+RUN chmod u+x /usr/bin/cross-build-start
+RUN [ "/usr/bin/cross-build-start" ]
 
 # Create missing directories
 ############################
@@ -79,9 +81,9 @@ RUN apk --update add --no-cache \
     pdns-backend-sqlite3 \
     pdns-backend-remote \
     pdns-backend-pgsql \
-    pdns-backend-ldap \
+#    pdns-backend-ldap \
     pdns-backend-mariadb \
-    pdns-backend-mysql \
+#    pdns-backend-mysql \
     pdns-backend-bind \
  #   pdns-backend-ua2 \
     pdns-backend-geoip \
@@ -91,8 +93,10 @@ RUN apk --update add --no-cache \
     postgresql-client \
     curl \
     dbus \
-    libldap \
-    python3
+    python3 \
+    py3-pip \
+    py3-ldap3 \
+    py3-wheel 
 
 # Required by PowerDNS Admin GUI
 RUN apk --update add --no-cache --virtual .build-deps \
@@ -104,22 +108,21 @@ RUN apk --update add --no-cache --virtual .build-deps \
     libffi-dev \
     libxslt-dev \
     xmlsec-dev \
-    openldap-dev \
     nodejs \
     npm
 
 # Install PowerDNS Admin GUI
 ##############################
 
-RUN mkdir -p /usr/share/webapps/ \
-    && cd /usr/share/webapps/ \
-    && git config --system http.sslverify false \
-    && git clone https://github.com/ngoduykhanh/PowerDNS-Admin.git powerdns-admin \
-    && cd /usr/share/webapps/powerdns-admin \
-    && pip3 install --no-cache-dir -r requirements.txt \
-    && mv package.json app/static \
-    && cd app/static \
-    && npm i
+#RUN mkdir -p /usr/share/webapps/ \
+#    && cd /usr/share/webapps/ \
+#    && git config --system http.sslverify false \
+#    && git clone https://github.com/ngoduykhanh/PowerDNS-Admin.git powerdns-admin \
+#    && cd /usr/share/webapps/powerdns-admin \
+#    && pip3 install --no-cache-dir -r requirements.txt \
+#    && mv package.json app/static \
+#    && cd app/static \
+#    && npm i
 
 # Cleanup
 #########
@@ -138,7 +141,7 @@ RUN rm /etc/pdns/pdns.conf \
     && rm /etc/supervisord.conf \
     && mv /root/pdns.conf /etc/pdns \
     && mv /root/recursor.conf /etc/pdns \
-    && mv /root/config.py /usr/share/webapps/powerdns-admin \
+#    && mv /root/config.py /usr/share/webapps/powerdns-admin \
     && mv /root/supervisord.conf /etc
 
 # Allow redirection of stdout to docker logs

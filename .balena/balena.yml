@@ -1,0 +1,11 @@
+build-variables:
+    global:
+        - MY_VAR_1=This is a variable
+        - ENVIRONMENT=development
+    services:
+        powerdns:
+            - MYSQL_ROOT_PASSWORD=mioga100Prozent
+            - MYSQL_DATABASE=glpidb            
+            - MYSQL_USER=glpi
+            - MYSQL_PASSWORD=77777777
+

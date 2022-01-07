@@ -1,0 +1,37 @@
+name: balena-powerdns-pihole
+type: sw.application
+description: >-
+  PowerDNS Server and AdminUI with PiHole Adblocker on balenaOS 
+fleetcta: Sounds good
+post-provisioning: >-
+  ## Usage instructions
+
+  **Application download** Once you power up your device you'll need to allow
+  some time for it to download the application, this typically takes 5-10
+  minutes but it can take more depending on your internet connection and what
+  device you are using.
+
+  **Usage** When the download is completed the application will start. 
+assets:
+  repository:
+    type: blob.asset
+    data:
+      url: 'https://github.com/fehlercode42/balena-powerdns-pihole/'
+  logo:
+    type: blob.asset
+    data:
+      url: 'https://github.com/fehlercode42/balena-powerdns-pihole/master/logo.png'
+data:
+  applicationEnvironmentVariables:
+    - MYSQL_PASSWORD: '77777777'
+    - MYSQL_HOST: '127.0.0.1'
+    - MYSQL_PORT: 3306
+  defaultDeviceType: amd64
+  supportedDeviceTypes:
+    - genericx86_64
+    - aarch64
+    - arm64
+    - arm
+    - qemux86_64
+    - intel-nuc
+version: 0.0.1
